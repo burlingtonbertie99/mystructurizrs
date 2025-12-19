@@ -1,0 +1,1 @@
+copy /Y C:\Users\chris\src\mydockers\mydockers2\structurizr\workspace

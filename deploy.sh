@@ -1,0 +1,1 @@
+cp workspace.dsl "C:\\Users\\chris\\src\\mydockers\\mydockers2\\structurizr\\workspace\\"
