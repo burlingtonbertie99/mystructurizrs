@@ -1,23 +1,57 @@
 workspace "Multi-Environment Deployment Example" "Example of a single system deployed into Production and DR environments." {
 
     model {
+	
+	
         /****************************************
          * People
          ****************************************/
-        user = person "End User" "A user of the system."
+        user = person "Administrator 1" "Administrator of the system."
+		user1 = person "Administrator 2" "Administrator of the system."
+
+		user2 = person "Officer 1" "Operator of the system."
+
+		user3 = person "Officer 2" "Operator of the system."
+
+
+
+
 
         /****************************************
          * Software System
          ****************************************/
-        webSystem = softwareSystem "Online Service" "Provides business functionality via a web interface." {
-            webApp = container "Web Application" "Provides the user interface." "Java / Spring Boot"
-            api     = container "API Application" "Provides JSON/REST APIs." "Java / Spring Boot"
-            db      = container "Database" "Stores application data." "PostgreSQL"
+        webSystem = softwareSystem "Obsidian CA Service" "Provides EMV Root CA functionality" {
+            webApp = container "Administration Client" "Provides the user interface." ".Net"
+            api     = container "Obsidian CA" "Provides Central control" ".Net"
+            db      = container "Database" "Stores application data." "SQL Server"
         }
 
         user -> webApp "Uses" "HTTPS"
-        webApp -> api "Invokes" "HTTPS / JSON"
-        api -> db "Reads from and writes to" "JDBC"
+		        user1 -> webApp "Uses" "HTTPS"
+				        user2 -> webApp "Uses" "HTTPS"
+						        user3 -> webApp "Uses" "HTTPS"
+								
+								
+								
+        webApp -> api "Invokes" "TCP / ASE-protected"
+        api -> db "Reads from and writes to" "ODBC"
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
         /****************************************
          * Deployment Environments
@@ -27,6 +61,10 @@ workspace "Multi-Environment Deployment Example" "Example of a single system dep
 		 
 		 
 		deploymentEnvironment "Full HA Deployment" {
+		
+		
+		
+		
             deploymentNode "AWS" "Primary production region" {
                 deploymentNode "VPC" {
                     deploymentNode "Public Subnet" {
@@ -40,9 +78,7 @@ workspace "Multi-Environment Deployment Example" "Example of a single system dep
                             containerInstance api
                         }
 
-                        deploymentNode "Database Tier" {
-                            containerInstance db
-                        }
+                        
                     }
                 }
             }
@@ -64,15 +100,15 @@ workspace "Multi-Environment Deployment Example" "Example of a single system dep
                             containerInstance api
                         }
 
-                        deploymentNode "Database Tier" {
-                            containerInstance db
-                        }
+                        
                     }
                 }
             }
 			
 			
-			
+			deploymentNode "Database Tier" {
+                            containerInstance db
+                        }
 			
 			
 			
