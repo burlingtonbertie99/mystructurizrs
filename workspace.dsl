@@ -22,6 +22,69 @@ workspace "Multi-Environment Deployment Example" "Example of a single system dep
         /****************************************
          * Deployment Environments
          ****************************************/
+		 
+		 
+		 
+		 
+		deploymentEnvironment "Full HA Deployment" {
+            deploymentNode "AWS" "Primary production region" {
+                deploymentNode "VPC" {
+                    deploymentNode "Public Subnet" {
+                        deploymentNode "Load Balancer" "AWS ALB" {
+                            containerInstance webApp
+                        }
+                    }
+
+                    deploymentNode "Private Subnet" {
+                        deploymentNode "Application Tier" {
+                            containerInstance api
+                        }
+
+                        deploymentNode "Database Tier" {
+                            containerInstance db
+                        }
+                    }
+                }
+            }
+			
+			
+			
+			
+			
+			deploymentNode "_AWS_" "Secondary DR region" {
+                deploymentNode "VPC" {
+                    deploymentNode "Public Subnet" {
+                        deploymentNode "Load Balancer" "AWS ALB" {
+                            containerInstance webApp
+                        }
+                    }
+
+                    deploymentNode "Private Subnet" {
+                        deploymentNode "Application Tier" {
+                            containerInstance api
+                        }
+
+                        deploymentNode "Database Tier" {
+                            containerInstance db
+                        }
+                    }
+                }
+            }
+			
+			
+			
+			
+			
+			
+        }
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
 
         deploymentEnvironment "Production" {
             deploymentNode "AWS" "Primary production region" {
@@ -86,7 +149,17 @@ workspace "Multi-Environment Deployment Example" "Example of a single system dep
         /****************************************
          * Deployment Views
          ****************************************/
-        deployment webSystem "Production" {
+        
+		deployment webSystem "Full HA Deployment" {
+            title "Full HA Deployment"
+            include *
+            /*autoLayout lr*/
+			autoLayout lr
+        }
+		
+		
+		
+		deployment webSystem "Production" {
             title "Production Deployment"
             include *
             autoLayout lr
