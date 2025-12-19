@@ -20,21 +20,25 @@ workspace "Multi-Environment Deployment Example" "Example of a single system dep
         /****************************************
          * Software System
          ****************************************/
-        webSystem = softwareSystem "Obsidian CA Service" "Provides EMV Root CA functionality" {
-            webApp = container "Administration Client" "Provides the user interface." ".Net"
-            api     = container "Obsidian CA" "Provides Central control" ".Net"
+        obsidianCA = softwareSystem "Obsidian CA Service" "Provides EMV Root CA functionality" {
+		
+            adminclient = container "Administration Client" "Provides the user interface." ".Net"
+            caserver     = container "Obsidian CA Server" "Provides Central control" ".Net"
+			hsm     = container "Entrust XC HSM" "Provides Key Security" "Native nCore"
             db      = container "Database" "Stores application data." "SQL Server"
+			
         }
 
-        user -> webApp "Uses" "HTTPS"
-		        user1 -> webApp "Uses" "HTTPS"
-				        user2 -> webApp "Uses" "HTTPS"
-						        user3 -> webApp "Uses" "HTTPS"
+        user -> adminclient "Uses" "2FA"
+		user1 -> adminclient "Uses" "2FA"
+		user2 -> adminclient "Uses" "2FA"
+		user3 -> adminclient "Uses" "2FA"
 								
 								
 								
-        webApp -> api "Invokes" "TCP / ASE-protected"
-        api -> db "Reads from and writes to" "ODBC"
+        adminclient -> caserver "Invokes" "TCP / ASE-protected"
+        caserver -> db "Reads from and writes to" "ODBC"
+		caserver -> hsm "Reads from and writes to" "hardserver"
 		
 		
 		
@@ -65,17 +69,18 @@ workspace "Multi-Environment Deployment Example" "Example of a single system dep
 		
 		
 		
-            deploymentNode "AWS" "Primary production region" {
+            deploymentNode "Production Main Site" "Primary production region" {
                 deploymentNode "VPC" {
-                    deploymentNode "Public Subnet" {
+                    deploymentNode "Workstation Subnet" {
                         deploymentNode "Load Balancer" "AWS ALB" {
-                            containerInstance webApp
+                            containerInstance adminclient
                         }
                     }
 
-                    deploymentNode "Private Subnet" {
+                    deploymentNode "Restricted Subnet" {
                         deploymentNode "Application Tier" {
-                            containerInstance api
+                            containerInstance caserver
+							containerInstance hsm
                         }
 
                         
@@ -87,17 +92,18 @@ workspace "Multi-Environment Deployment Example" "Example of a single system dep
 			
 			
 			
-			deploymentNode "_AWS_" "Secondary DR region" {
+			deploymentNode "DR" "Secondary DR region" {
                 deploymentNode "VPC" {
-                    deploymentNode "Public Subnet" {
+                    deploymentNode "Workstation Subnet" {
                         deploymentNode "Load Balancer" "AWS ALB" {
-                            containerInstance webApp
+                            containerInstance adminclient
                         }
                     }
 
-                    deploymentNode "Private Subnet" {
+                    deploymentNode "Restricted Subnet" {
                         deploymentNode "Application Tier" {
-                            containerInstance api
+                            containerInstance caserver
+							containerInstance hsm
                         }
 
                         
@@ -127,13 +133,13 @@ workspace "Multi-Environment Deployment Example" "Example of a single system dep
                 deploymentNode "VPC" {
                     deploymentNode "Public Subnet" {
                         deploymentNode "Load Balancer" "AWS ALB" {
-                            containerInstance webApp
+                            containerInstance adminclient
                         }
                     }
 
                     deploymentNode "Private Subnet" {
                         deploymentNode "Application Tier" {
-                            containerInstance api
+                            containerInstance caserver
                         }
 
                         deploymentNode "Database Tier" {
@@ -149,13 +155,13 @@ workspace "Multi-Environment Deployment Example" "Example of a single system dep
                 deploymentNode "VPC" {
                     deploymentNode "Public Subnet" {
                         deploymentNode "Load Balancer" "AWS ALB" {
-                            containerInstance webApp
+                            containerInstance adminclient
                         }
                     }
 
                     deploymentNode "Private Subnet" {
                         deploymentNode "Application Tier" {
-                            containerInstance api
+                            containerInstance caserver
                         }
 
                         deploymentNode "Database Tier" {
@@ -172,12 +178,12 @@ workspace "Multi-Environment Deployment Example" "Example of a single system dep
         /****************************************
          * Static Views
          ****************************************/
-        systemContext webSystem {
+        systemContext obsidianCA {
             include *
             autoLayout lr
         }
 
-        container webSystem {
+        container obsidianCA {
             include *
             autoLayout lr
         }
@@ -186,7 +192,7 @@ workspace "Multi-Environment Deployment Example" "Example of a single system dep
          * Deployment Views
          ****************************************/
         
-		deployment webSystem "Full HA Deployment" {
+		deployment obsidianCA "Full HA Deployment" {
             title "Full HA Deployment"
             include *
             /*autoLayout lr*/
@@ -195,13 +201,13 @@ workspace "Multi-Environment Deployment Example" "Example of a single system dep
 		
 		
 		
-		deployment webSystem "Production" {
+		deployment obsidianCA "Production" {
             title "Production Deployment"
             include *
             autoLayout lr
         }
 
-        deployment webSystem "DR" {
+        deployment obsidianCA "DR" {
             title "Disaster Recovery Deployment"
             include *
             autoLayout lr
