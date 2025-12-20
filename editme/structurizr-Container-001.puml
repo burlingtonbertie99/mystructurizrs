@@ -1,0 +1,89 @@
+@startuml
+set separator none
+title Obsidian CA Service - Containers
+
+left to right direction
+
+skinparam {
+  arrowFontSize 10
+  defaultTextAlignment center
+  wrapWidth 200
+  maxMessageSize 100
+}
+
+hide stereotype
+
+skinparam rectangle<<ObsidianCAService.AdministrationClient>> {
+  BackgroundColor #438dd5
+  FontColor #ffffff
+  BorderColor #2e6295
+  shadowing false
+}
+skinparam person<<Administrator1>> {
+  BackgroundColor #dddddd
+  FontColor #000000
+  BorderColor #9a9a9a
+  shadowing false
+}
+skinparam person<<Administrator2>> {
+  BackgroundColor #dddddd
+  FontColor #000000
+  BorderColor #9a9a9a
+  shadowing false
+}
+skinparam database<<ObsidianCAService.Database>> {
+  BackgroundColor #f3f4f6
+  FontColor #2e3440
+  BorderColor #4c566a
+  shadowing false
+}
+skinparam rectangle<<ObsidianCAService.EntrustXCHSM>> {
+  BackgroundColor #438dd5
+  FontColor #ffffff
+  BorderColor #2e6295
+  shadowing false
+}
+skinparam rectangle<<ObsidianCAService.ObsidianCAServer>> {
+  BackgroundColor #ffffff
+  FontColor #2e3440
+  BorderColor #2e3440
+  shadowing false
+}
+skinparam person<<Officer1>> {
+  BackgroundColor #dddddd
+  FontColor #000000
+  BorderColor #9a9a9a
+  shadowing false
+}
+skinparam person<<Officer2>> {
+  BackgroundColor #dddddd
+  FontColor #000000
+  BorderColor #9a9a9a
+  shadowing false
+}
+skinparam rectangle<<ObsidianCAService>> {
+  BorderColor #0b4884
+  FontColor #0b4884
+  shadowing false
+}
+
+person "==Administrator 1\n<size:10>[Person]</size>\n\nAdministrator of the system." <<Administrator1>> as Administrator1
+person "==Administrator 2\n<size:10>[Person]</size>\n\nAdministrator of the system." <<Administrator2>> as Administrator2
+person "==Officer 1\n<size:10>[Person]</size>\n\nOperator of the system." <<Officer1>> as Officer1
+person "==Officer 2\n<size:10>[Person]</size>\n\nOperator of the system." <<Officer2>> as Officer2
+
+rectangle "Obsidian CA Service\n<size:10>[Software System]</size>" <<ObsidianCAService>> {
+  rectangle "==Administration Client\n<size:10>[Container: .Net]</size>\n\nProvides the user interface." <<ObsidianCAService.AdministrationClient>> as ObsidianCAService.AdministrationClient
+  rectangle "==Obsidian CA Server\n<size:10>[Container: .Net]</size>\n\nProvides Central control" <<ObsidianCAService.ObsidianCAServer>> as ObsidianCAService.ObsidianCAServer
+  rectangle "==Entrust XC HSM\n<size:10>[Container: Native nCore]</size>\n\nProvides Key Security" <<ObsidianCAService.EntrustXCHSM>> as ObsidianCAService.EntrustXCHSM
+  database "==Database\n<size:10>[Container: SQL Server]</size>\n\nStores application data." <<ObsidianCAService.Database>> as ObsidianCAService.Database
+}
+
+Administrator1 .[#707070,thickness=2].> ObsidianCAService.AdministrationClient : "<color:#707070>Uses\n<color:#707070><size:8>[2FA]</size>"
+Administrator2 .[#707070,thickness=2].> ObsidianCAService.AdministrationClient : "<color:#707070>Uses\n<color:#707070><size:8>[2FA]</size>"
+Officer1 .[#707070,thickness=2].> ObsidianCAService.AdministrationClient : "<color:#707070>Uses\n<color:#707070><size:8>[2FA]</size>"
+Officer2 .[#707070,thickness=2].> ObsidianCAService.AdministrationClient : "<color:#707070>Uses\n<color:#707070><size:8>[2FA]</size>"
+ObsidianCAService.AdministrationClient .[#707070,thickness=2].> ObsidianCAService.ObsidianCAServer : "<color:#707070>Invokes\n<color:#707070><size:8>[TCP / ASE-protected]</size>"
+ObsidianCAService.ObsidianCAServer .[#707070,thickness=2].> ObsidianCAService.Database : "<color:#707070>Reads from and writes to\n<color:#707070><size:8>[ODBC]</size>"
+ObsidianCAService.ObsidianCAServer .[#707070,thickness=2].> ObsidianCAService.EntrustXCHSM : "<color:#707070>Reads from and writes to\n<color:#707070><size:8>[hardserver]</size>"
+@enduml

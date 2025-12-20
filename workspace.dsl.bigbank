@@ -5,8 +5,9 @@
  * - "Big Bank plc - Internet Banking System" (https://structurizr.com/share/36141/)
 */
 workspace "Big Bank plc" "This is an example workspace to illustrate the key features of Structurizr, via the DSL, based around a fictional online banking system." {
-    !docs workspace-docs
-    !adrs workspace-adrs
+   /* !docs workspace
+    !adrs workspace
+	*/
 
     model {
         properties {
@@ -34,8 +35,9 @@ workspace "Big Bank plc" "This is an example workspace to illustrate the key fea
             atm = softwaresystem "ATM" "Allows customers to withdraw cash." "Existing System"
 
             internetBankingSystem = softwaresystem "Internet Banking System" "Allows customers to view information about their bank accounts, and make payments." {
-                !adrs internet-banking-system/adr
+               /* !adrs internet-banking-system/adr
                 !docs internet-banking-system/docs
+				*/
                 properties {
                     "Owner" "Customer Services"
                     "Development Team" "Dev/Internet Services"
@@ -54,12 +56,14 @@ workspace "Big Bank plc" "This is an example workspace to illustrate the key fea
                     resetPasswordController = component "Reset Password Controller" "Allows users to reset their passwords with a single use URL." "Spring MVC Rest Controller"
                     securityComponent = component "Security Component" "Provides functionality related to signing in, changing passwords, etc." "Spring Bean"
                     mainframeBankingSystemFacade = component "Mainframe Banking System Facade" "A facade onto the mainframe banking system." "Spring Bean" {
-                        !adrs internet-banking-system/api-application/mainframe-banking-system-facade/adr
+                       /* !adrs internet-banking-system/api-application/mainframe-banking-system-facade/adr
                         !docs internet-banking-system/api-application/mainframe-banking-system-facade/docs
+						*/
                     }
                     emailComponent = component "E-mail Component" "Sends e-mails to users." "Spring Bean" {
-                        !adrs internet-banking-system/api-application/email-component/adr
+                       /* !adrs internet-banking-system/api-application/email-component/adr
                         !docs internet-banking-system/api-application/email-component/docs
+						*/
                     }
                 }
                 database = container "Database" "Stores user registration information, hashed authentication credentials, access logs, etc." "Oracle Database Schema" "Database"
@@ -220,7 +224,7 @@ workspace "Big Bank plc" "This is an example workspace to illustrate the key fea
         }
 
         image atm {
-            image atm/atm-example.png
+            image atm-machine.jpg
             title "ATM System"
             description "Image View to show how the ATM system works internally"
         }
@@ -263,13 +267,13 @@ workspace "Big Bank plc" "This is an example workspace to illustrate the key fea
         }
 
         image database {
-            image internet-banking-system/database-erd-example.jpg
+            image cccj-The-Entity-Relationship-Diagram.jpg
             title "Entity Relationship Diagram"
             description "Image View to show the ERD diagram for the database container"
         }
 
         image accountsSummaryController {
-            image internet-banking-system/uml-class-diagram.png
+            image cccj-The-Entity-Relationship-Diagram.jpg
             title "AccountsSummaryController Zoom-In"
             description "This is a sample imageView for code of a component"
         }

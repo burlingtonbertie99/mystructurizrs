@@ -1,0 +1,193 @@
+@startuml
+set separator none
+title Full HA Deployment
+
+left to right direction
+
+skinparam {
+  arrowFontSize 10
+  defaultTextAlignment center
+  wrapWidth 200
+  maxMessageSize 100
+}
+
+hide stereotype
+
+skinparam rectangle<<FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_1>> {
+  BackgroundColor #438dd5
+  FontColor #ffffff
+  BorderColor #2e6295
+  shadowing false
+}
+skinparam rectangle<<FullHADeployment.DR.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_1>> {
+  BackgroundColor #438dd5
+  FontColor #ffffff
+  BorderColor #2e6295
+  shadowing false
+}
+skinparam rectangle<<FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier>> {
+  BackgroundColor #ffffff
+  FontColor #000000
+  BorderColor #888888
+  shadowing false
+}
+skinparam rectangle<<FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier>> {
+  BackgroundColor #ffffff
+  FontColor #000000
+  BorderColor #888888
+  shadowing false
+}
+skinparam rectangle<<FullHADeployment.DR>> {
+  BackgroundColor #ffffff
+  FontColor #2e3440
+  BorderColor #2f855a
+  shadowing false
+}
+skinparam database<<FullHADeployment.DatabaseTier.Database_1>> {
+  BackgroundColor #f3f4f6
+  FontColor #2e3440
+  BorderColor #4c566a
+  shadowing false
+}
+skinparam rectangle<<FullHADeployment.DatabaseTier>> {
+  BackgroundColor #ffffff
+  FontColor #000000
+  BorderColor #888888
+  shadowing false
+}
+skinparam rectangle<<FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier.EntrustXCHSM_1>> {
+  BackgroundColor #438dd5
+  FontColor #ffffff
+  BorderColor #2e6295
+  shadowing false
+}
+skinparam rectangle<<FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier.EntrustXCHSM_1>> {
+  BackgroundColor #438dd5
+  FontColor #ffffff
+  BorderColor #2e6295
+  shadowing false
+}
+skinparam rectangle<<FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet.LoadBalancer>> {
+  BackgroundColor #ffffff
+  FontColor #000000
+  BorderColor #888888
+  shadowing false
+}
+skinparam rectangle<<FullHADeployment.DR.VPC.WorkstationSubnet.LoadBalancer>> {
+  BackgroundColor #ffffff
+  FontColor #000000
+  BorderColor #888888
+  shadowing false
+}
+skinparam rectangle<<FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1>> {
+  BackgroundColor #ffffff
+  FontColor #2e3440
+  BorderColor #2e3440
+  shadowing false
+}
+skinparam rectangle<<FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1>> {
+  BackgroundColor #ffffff
+  FontColor #2e3440
+  BorderColor #2e3440
+  shadowing false
+}
+skinparam rectangle<<FullHADeployment.ProductionMainSite>> {
+  BackgroundColor #ffffff
+  FontColor #2e3440
+  BorderColor #2b6cb0
+  shadowing false
+}
+skinparam rectangle<<FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet>> {
+  BackgroundColor #ffffff
+  FontColor #000000
+  BorderColor #888888
+  shadowing false
+}
+skinparam rectangle<<FullHADeployment.DR.VPC.RestrictedSubnet>> {
+  BackgroundColor #ffffff
+  FontColor #000000
+  BorderColor #888888
+  shadowing false
+}
+skinparam rectangle<<FullHADeployment.ProductionMainSite.VPC>> {
+  BackgroundColor #ffffff
+  FontColor #000000
+  BorderColor #888888
+  shadowing false
+}
+skinparam rectangle<<FullHADeployment.DR.VPC>> {
+  BackgroundColor #ffffff
+  FontColor #000000
+  BorderColor #888888
+  shadowing false
+}
+skinparam rectangle<<FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet>> {
+  BackgroundColor #ffffff
+  FontColor #000000
+  BorderColor #888888
+  shadowing false
+}
+skinparam rectangle<<FullHADeployment.DR.VPC.WorkstationSubnet>> {
+  BackgroundColor #ffffff
+  FontColor #000000
+  BorderColor #888888
+  shadowing false
+}
+
+rectangle "Production Main Site\n<size:10>[Deployment Node]</size>" <<FullHADeployment.ProductionMainSite>> as FullHADeployment.ProductionMainSite {
+  rectangle "VPC\n<size:10>[Deployment Node]</size>" <<FullHADeployment.ProductionMainSite.VPC>> as FullHADeployment.ProductionMainSite.VPC {
+    rectangle "Workstation Subnet\n<size:10>[Deployment Node]</size>" <<FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet>> as FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet {
+      rectangle "Load Balancer\n<size:10>[Deployment Node]</size>" <<FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet.LoadBalancer>> as FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet.LoadBalancer {
+        rectangle "==Administration Client\n<size:10>[Container: .Net]</size>\n\nProvides the user interface." <<FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_1>> as FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_1
+      }
+
+    }
+
+    rectangle "Restricted Subnet\n<size:10>[Deployment Node]</size>" <<FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet>> as FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet {
+      rectangle "Application Tier\n<size:10>[Deployment Node]</size>" <<FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier>> as FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier {
+        rectangle "==Obsidian CA Server\n<size:10>[Container: .Net]</size>\n\nProvides Central control" <<FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1>> as FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1
+        rectangle "==Entrust XC HSM\n<size:10>[Container: Native nCore]</size>\n\nProvides Key Security" <<FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier.EntrustXCHSM_1>> as FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier.EntrustXCHSM_1
+      }
+
+    }
+
+  }
+
+}
+
+rectangle "DR\n<size:10>[Deployment Node]</size>" <<FullHADeployment.DR>> as FullHADeployment.DR {
+  rectangle "VPC\n<size:10>[Deployment Node]</size>" <<FullHADeployment.DR.VPC>> as FullHADeployment.DR.VPC {
+    rectangle "Workstation Subnet\n<size:10>[Deployment Node]</size>" <<FullHADeployment.DR.VPC.WorkstationSubnet>> as FullHADeployment.DR.VPC.WorkstationSubnet {
+      rectangle "Load Balancer\n<size:10>[Deployment Node]</size>" <<FullHADeployment.DR.VPC.WorkstationSubnet.LoadBalancer>> as FullHADeployment.DR.VPC.WorkstationSubnet.LoadBalancer {
+        rectangle "==Administration Client\n<size:10>[Container: .Net]</size>\n\nProvides the user interface." <<FullHADeployment.DR.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_1>> as FullHADeployment.DR.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_1
+      }
+
+    }
+
+    rectangle "Restricted Subnet\n<size:10>[Deployment Node]</size>" <<FullHADeployment.DR.VPC.RestrictedSubnet>> as FullHADeployment.DR.VPC.RestrictedSubnet {
+      rectangle "Application Tier\n<size:10>[Deployment Node]</size>" <<FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier>> as FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier {
+        rectangle "==Obsidian CA Server\n<size:10>[Container: .Net]</size>\n\nProvides Central control" <<FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1>> as FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1
+        rectangle "==Entrust XC HSM\n<size:10>[Container: Native nCore]</size>\n\nProvides Key Security" <<FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier.EntrustXCHSM_1>> as FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier.EntrustXCHSM_1
+      }
+
+    }
+
+  }
+
+}
+
+rectangle "Database Tier\n<size:10>[Deployment Node]</size>" <<FullHADeployment.DatabaseTier>> as FullHADeployment.DatabaseTier {
+  database "==Database\n<size:10>[Container: SQL Server]</size>\n\nStores application data." <<FullHADeployment.DatabaseTier.Database_1>> as FullHADeployment.DatabaseTier.Database_1
+}
+
+FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_1 .[#707070,thickness=2].> FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1 : "<color:#707070>Invokes\n<color:#707070><size:8>[TCP / ASE-protected]</size>"
+FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1 .[#707070,thickness=2].> FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier.EntrustXCHSM_1 : "<color:#707070>Reads from and writes to\n<color:#707070><size:8>[hardserver]</size>"
+FullHADeployment.DR.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_1 .[#707070,thickness=2].> FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1 : "<color:#707070>Invokes\n<color:#707070><size:8>[TCP / ASE-protected]</size>"
+FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1 .[#707070,thickness=2].> FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier.EntrustXCHSM_1 : "<color:#707070>Reads from and writes to\n<color:#707070><size:8>[hardserver]</size>"
+FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_1 .[#707070,thickness=2].> FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1 : "<color:#707070>Invokes\n<color:#707070><size:8>[TCP / ASE-protected]</size>"
+FullHADeployment.DR.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_1 .[#707070,thickness=2].> FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1 : "<color:#707070>Invokes\n<color:#707070><size:8>[TCP / ASE-protected]</size>"
+FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1 .[#707070,thickness=2].> FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier.EntrustXCHSM_1 : "<color:#707070>Reads from and writes to\n<color:#707070><size:8>[hardserver]</size>"
+FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1 .[#707070,thickness=2].> FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier.EntrustXCHSM_1 : "<color:#707070>Reads from and writes to\n<color:#707070><size:8>[hardserver]</size>"
+FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1 .[#707070,thickness=2].> FullHADeployment.DatabaseTier.Database_1 : "<color:#707070>Reads from and writes to\n<color:#707070><size:8>[ODBC]</size>"
+FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1 .[#707070,thickness=2].> FullHADeployment.DatabaseTier.Database_1 : "<color:#707070>Reads from and writes to\n<color:#707070><size:8>[ODBC]</size>"
+@enduml
