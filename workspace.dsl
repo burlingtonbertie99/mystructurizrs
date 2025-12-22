@@ -1,6 +1,13 @@
 workspace "Multi-Environment Deployment Example" "Example of a single system deployed into Production and DR environments." {
 
+
+
+
     model {
+	
+	
+	
+	
 	
 	
         /****************************************
@@ -22,11 +29,18 @@ workspace "Multi-Environment Deployment Example" "Example of a single system dep
          ****************************************/
         obsidianCA = softwareSystem "Obsidian CA Service" "Provides EMV Root CA functionality" {
 		
-            adminclient = container "Administration Client" "Provides the user interface." ".Net"
-            caserver     = container "Obsidian CA Server" "Provides Central control" ".Net" {
+            adminclient1 = container "Administration Client (Main)" "Provides the user interface." ".Net"
+			adminclient2 = container "Administration Client (DR)" "Provides the user interface." ".Net"
+            caserver1     = container "Obsidian CA Server" "Central control + RFS" ".Net" {
 				tags "Server"
 			}
-			hsm     = container "Entrust XC HSM" "Provides Key Security" "Native nCore"
+			caserver2     = container "Obsidian CA Server (DR)" "Provides Central control" ".Net" {
+				tags "Server"
+			}
+			
+			hsm1     = container "Entrust XC HSM (Main)" "Provides Key Security" "Native nCore"
+
+			hsm2     = container "Entrust XC HSM (DR)" "Provides Key Security" "Native nCore"
            
 
 		   db      = container "Database" "Stores application data." "SQL Server" {
@@ -37,35 +51,29 @@ workspace "Multi-Environment Deployment Example" "Example of a single system dep
 			
         }
 
-        user -> adminclient "Uses" "2FA"
-		user1 -> adminclient "Uses" "2FA"
-		user2 -> adminclient "Uses" "2FA"
-		user3 -> adminclient "Uses" "2FA"
+        user -> adminclient1 "Uses" "2FA"
+		user1 -> adminclient1 "Uses" "2FA"
+		user2 -> adminclient1 "Uses" "2FA"
+		user3 -> adminclient1 "Uses" "2FA"
 								
 								
 								
-        adminclient -> caserver "Invokes" "TCP / ASE-protected"
-        caserver -> db "Reads from and writes to" "ODBC"
-		caserver -> hsm "Reads from and writes to" "hardserver"
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+        adminclient1 -> caserver1 "Admin commands" "ASE-protected"
+        adminclient2 -> caserver2 "Admin Commands" "ASE-protected"
 
-        /****************************************
+        caserver1 -> db "Reads from and writes to" "ODBC"
+		caserver1 -> hsm1 "Crypto commands" 
+		caserver1 -> hsm2 "Crypto commands" 
+		
+		
+		caserver2 -> hsm2 "Crypto commands" 
+		caserver2 -> hsm1 "Crypto commands" 
+		
+		
+		
+		
+		
+       /****************************************
          * Deployment Environments
          ****************************************/
 		 
@@ -81,25 +89,23 @@ workspace "Multi-Environment Deployment Example" "Example of a single system dep
 			
 			
 				tags "Production"
-                deploymentNode "VPC" {
+                
                     deploymentNode "Workstation Subnet" {
-                        deploymentNode "Load Balancer" "AWS ALB" {
-                            containerInstance adminclient
-                        }
+                        
+                            containerInstance adminclient1
+                        
                     }
 
-                    deploymentNode "Restricted Subnet" {
-                        deploymentNode "Application Tier" {
-                            containerInstance caserver
-							containerInstance hsm
-                        }
+                    deploymentNode "Production Subnet" {
+                        
+                            containerInstance caserver1
+							containerInstance hsm1
+                        
 
                         
                     }
-                }
+                
             }
-			
-			
 			
 			
 			
@@ -107,26 +113,25 @@ workspace "Multi-Environment Deployment Example" "Example of a single system dep
 			
 				tags "Disaster Recovery"
 			
-                deploymentNode "VPC" {
                     deploymentNode "Workstation Subnet" {
-                        deploymentNode "Load Balancer" "AWS ALB" {
-                            containerInstance adminclient
-                        }
+                       
+                            containerInstance adminclient2
+                        
                     }
 
-                    deploymentNode "Restricted Subnet" {
-                        deploymentNode "Application Tier" {
-                            containerInstance caserver
-							containerInstance hsm
-                        }
+                    deploymentNode "DR Subnet" {
+                        
+                            containerInstance caserver2
+							containerInstance hsm2
+                        
 
                         
                     }
-                }
+                
             }
 			
 			
-			deploymentNode "Database Tier" {
+			deploymentNode "Database Tier"  "AlwaysOn"{
                             containerInstance db
                         }
 			
@@ -143,47 +148,43 @@ workspace "Multi-Environment Deployment Example" "Example of a single system dep
 		 
 
         deploymentEnvironment "Production" {
-            deploymentNode "AWS" "Primary production region" {
-                deploymentNode "VPC" {
+            
+                
                     deploymentNode "Public Subnet" {
-                        deploymentNode "Load Balancer" "AWS ALB" {
-                            containerInstance adminclient
-                        }
+                        
+                            containerInstance adminclient1
+                        
                     }
 
                     deploymentNode "Private Subnet" {
-                        deploymentNode "Application Tier" {
-                            containerInstance caserver
-                        }
+                        
+                            containerInstance caserver1
+                        
 
-                        deploymentNode "Database Tier" {
-                            containerInstance db
-                        }
+                        
                     }
-                }
-            }
+                
+            
         }
 
         deploymentEnvironment "DR" {
-            deploymentNode "AWS" "Secondary DR region" {
-                deploymentNode "VPC" {
+            
+                
                     deploymentNode "Public Subnet" {
-                        deploymentNode "Load Balancer" "AWS ALB" {
-                            containerInstance adminclient
-                        }
+                        
+                            containerInstance adminclient2
+                        
                     }
 
                     deploymentNode "Private Subnet" {
-                        deploymentNode "Application Tier" {
-                            containerInstance caserver
-                        }
+                        
+                            containerInstance caserver2
+                        
 
-                        deploymentNode "Database Tier" {
-                            containerInstance db
-                        }
+                        
                     }
-                }
-            }
+                
+            
         }
     }
 
