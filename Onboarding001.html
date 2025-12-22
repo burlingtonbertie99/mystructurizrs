@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EMV Issuer PK Onboarding</title>
+</head>
+<body>
+    <h1>Issuer PK Onboarding</h1>
+
+    <form id="onboardForm">
+        <div>
+            <label for="entityName">Entity Name:</label><br>
+            <input type="text" id="entityName" name="entityName" required>
+        </div>
+
+        <br>
+
+        <div>
+            <label for="bin">BIN:</label><br>
+            <input type="text" id="bin" name="bin" required>
+        </div>
+
+        <br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <pre id="result"></pre>
+
+    <script>
+        document.getElementById("onboardForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const payload = {
+                entityName: document.getElementById("entityName").value,
+                bin: document.getElementById("bin").value
+            };
+
+            fetch("http://localhost:5666/webhook-test/emv/issuer-pk/onboard", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("result").textContent =
+                    "Request sent successfully:\n" + data;
+            })
+            .catch(error => {
+                document.getElementById("result").textContent =
+                    "Error:\n" + error;
+            });
+        });
+    </script>
+</body>
+</html>

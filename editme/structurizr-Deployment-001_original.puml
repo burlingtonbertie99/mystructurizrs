@@ -19,7 +19,7 @@ skinparam rectangle<<FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet.L
   BorderColor #2e6295
   shadowing false
 }
-skinparam rectangle<<FullHADeployment.DR.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_2>> {
+skinparam rectangle<<FullHADeployment.DR.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_1>> {
   BackgroundColor #438dd5
   FontColor #ffffff
   BorderColor #2e6295
@@ -138,7 +138,7 @@ rectangle "Production Main Site\n<size:10>[Deployment Node]</size>" <<FullHADepl
   rectangle "VPC\n<size:10>[Deployment Node]</size>" <<FullHADeployment.ProductionMainSite.VPC>> as FullHADeployment.ProductionMainSite.VPC {
     rectangle "Workstation Subnet\n<size:10>[Deployment Node]</size>" <<FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet>> as FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet {
       rectangle "Load Balancer\n<size:10>[Deployment Node]</size>" <<FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet.LoadBalancer>> as FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet.LoadBalancer {
-        rectangle "==Administration Client (Main)\n<size:10>[Container: .Net]</size>\n\nProvides the user interface." <<FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_1>> as FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_1
+        rectangle "==Administration Client\n<size:10>[Container: .Net]</size>\n\nProvides the user interface." <<FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_1>> as FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_1
       }
 
     }
@@ -159,7 +159,7 @@ rectangle "DR\n<size:10>[Deployment Node]</size>" <<FullHADeployment.DR>> as Ful
   rectangle "VPC\n<size:10>[Deployment Node]</size>" <<FullHADeployment.DR.VPC>> as FullHADeployment.DR.VPC {
     rectangle "Workstation Subnet\n<size:10>[Deployment Node]</size>" <<FullHADeployment.DR.VPC.WorkstationSubnet>> as FullHADeployment.DR.VPC.WorkstationSubnet {
       rectangle "Load Balancer\n<size:10>[Deployment Node]</size>" <<FullHADeployment.DR.VPC.WorkstationSubnet.LoadBalancer>> as FullHADeployment.DR.VPC.WorkstationSubnet.LoadBalancer {
-        rectangle "==Administration Client (DR)\n<size:10>[Container: .Net]</size>\n\nProvides the user interface at DR site." <<FullHADeployment.DR.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_2>> as FullHADeployment.DR.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_2
+        rectangle "==Administration Client\n<size:10>[Container: .Net]</size>\n\nProvides the user interface." <<FullHADeployment.DR.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_1>> as FullHADeployment.DR.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_1
       }
 
     }
@@ -181,22 +181,11 @@ rectangle "Database Tier\n<size:10>[Deployment Node]</size>" <<FullHADeployment.
 }
 
 FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_1 .[#707070,thickness=2].> FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1 : "<color:#707070>Invokes\n<color:#707070><size:8>[TCP / ASE-protected]</size>"
-
-
-
 FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1 .[#707070,thickness=2].> FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier.EntrustXCHSM_1 : "<color:#707070>Reads from and writes to\n<color:#707070><size:8>[hardserver]</size>"
-
-
-
-
-
+FullHADeployment.DR.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_1 .[#707070,thickness=2].> FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1 : "<color:#707070>Invokes\n<color:#707070><size:8>[TCP / ASE-protected]</size>"
 FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1 .[#707070,thickness=2].> FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier.EntrustXCHSM_1 : "<color:#707070>Reads from and writes to\n<color:#707070><size:8>[hardserver]</size>"
-
-
-
-
-
-FullHADeployment.DR.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_2 .[#707070,thickness=2].> FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1 : "<color:#707070>Invokes\n<color:#707070><size:8>[TCP / ASE-protected]</size>"
+FullHADeployment.ProductionMainSite.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_1 .[#707070,thickness=2].> FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1 : "<color:#707070>Invokes\n<color:#707070><size:8>[TCP / ASE-protected]</size>"
+FullHADeployment.DR.VPC.WorkstationSubnet.LoadBalancer.AdministrationClient_1 .[#707070,thickness=2].> FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1 : "<color:#707070>Invokes\n<color:#707070><size:8>[TCP / ASE-protected]</size>"
 FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1 .[#707070,thickness=2].> FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier.EntrustXCHSM_1 : "<color:#707070>Reads from and writes to\n<color:#707070><size:8>[hardserver]</size>"
 FullHADeployment.ProductionMainSite.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1 .[#707070,thickness=2].> FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier.EntrustXCHSM_1 : "<color:#707070>Reads from and writes to\n<color:#707070><size:8>[hardserver]</size>"
 FullHADeployment.DR.VPC.RestrictedSubnet.ApplicationTier.ObsidianCAServer_1 .[#707070,thickness=2].> FullHADeployment.DatabaseTier.Database_1 : "<color:#707070>Reads from and writes to\n<color:#707070><size:8>[ODBC]</size>"
