@@ -41,9 +41,8 @@ workspace "Multi-Environment Deployment Example" "Example of a single system dep
 			hsm1     = container "Entrust XC HSM (Main)" "Provides Key Security" "Native nCore"
 
 			hsm2     = container "Entrust XC HSM (DR)" "Provides Key Security" "Native nCore"
-           
 
-		   db      = container "Database" "Stores application data." "SQL Server" {
+		   db      = container "Database" "Stores all application data" "AlwaysON SQL Server" {
 				tags "Database"
 			}
 
@@ -61,10 +60,13 @@ workspace "Multi-Environment Deployment Example" "Example of a single system dep
         adminclient1 -> caserver1 "Admin commands" "ASE-protected"
         adminclient2 -> caserver2 "Admin Commands" "ASE-protected"
 
-        caserver1 -> db "Reads from and writes to" "ODBC"
+        caserver1 -> db "DB R/W" "ODBC"
 		caserver1 -> hsm1 "Crypto commands" 
 		caserver1 -> hsm2 "Crypto commands" 
 		
+		
+		
+        caserver2 -> db "DB R/W" "ODBC"
 		
 		caserver2 -> hsm2 "Crypto commands" 
 		caserver2 -> hsm1 "Crypto commands" 
